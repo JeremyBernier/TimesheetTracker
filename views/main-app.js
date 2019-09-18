@@ -154,6 +154,7 @@ class TimesheetRow extends LitElement {
         <spreadsheet-cell>${displayTime(stopDate)}</spreadsheet-cell>
         <spreadsheet-cell>${displayTimeDuration(msDiff)}</spreadsheet-cell>
         <spreadsheet-cell>${displayEarnings(timeToEarnings(msDiff))}</spreadsheet-cell>
+        <spreadsheet-cell><span contenteditable="true">Notes go here</span></spreadsheet-cell>
         <button style="user-select:none;" @click=${this.handleDeleteRow}>x</button>
       </spreadsheet-row>
     `
@@ -201,6 +202,22 @@ class MainApp extends LitElement {
     })
 
     this.handleDeleteRow = this.handleDeleteRow.bind(this)
+    this.handleInput = this.handleInput.bind(this)
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    document.addEventListener('input', this.handleInput);
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener('input', this.handleInput);
+    super.disconnectedCallback();
+  }
+
+  handleInput(event) {
+    console.log('input event', event.target)
+    console.log('input event', event.composedPath()[0])
   }
 
   handleDeleteRow(startTime) {
@@ -255,9 +272,14 @@ class MainApp extends LitElement {
         </section>
         <section class="section-middle">
           ${this.shifts.map(shift => html`
-            <timesheet-row .data=${shift} .handleDeleteRow=${() => this.handleDeleteRow(shift.start)}></timesheet-row>
+            <timesheet-row
+              .data=${shift}
+              .handleDeleteRow=${() => this.handleDeleteRow(shift.start)}
+            ></timesheet-row>
           `)}
-          ${this.timerRunning ? html`<timesheet-row stillRunning="true" .data=${currentShiftSoFar}></timesheet-row>` : ''}
+          ${this.timerRunning ? html`
+            <timesheet-row stillRunning="true" .data=${currentShiftSoFar}></timesheet-row>
+          ` : ''}
 
           <button style="margin-top:1rem;" @click="${this.handleTimerBtn}">${this.timerRunning ? 'Clock Out' : 'Clock In'}</button>
         </section>
