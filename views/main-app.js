@@ -29,7 +29,6 @@ class MainApp extends LitElement {
       if (val != null && Array.isArray(val)) {
         this.shifts = val
         this.shiftsModelObj = new ShiftsModel(this.shifts)
-        console.log('this.shifts', this.shifts)
       }
 
       if (this.shifts.length > 0) {
@@ -68,7 +67,21 @@ class MainApp extends LitElement {
   handleInput(event) {
     const inputElem = event.composedPath()[0]
     const id = +inputElem.id.split('-')[0]
-    this.updateCell(id, 'notes', inputElem.innerText || inputElem.value)
+    const field = inputElem.id.split('-')[1]
+    const value = inputElem.innerText || inputElem.value
+
+    if (field === 'notes') {
+
+      this.updateCell(id, field, value)
+
+    } else if (field === 'start') {
+      const date = new Date(value)
+      if (!isNaN(date)) {
+        this.updateCell(id, field, date)
+      } else {
+        // don't change
+      }
+    }
   }
 
   updateCell(id, field, value) {

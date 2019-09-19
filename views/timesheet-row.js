@@ -64,7 +64,7 @@ class TimesheetRow extends LitElement {
 
     return html`
       <spreadsheet-row>
-        <spreadsheet-cell>${displayDate(startDate)}</spreadsheet-cell>
+        <spreadsheet-cell id="${id}-start" contenteditable="true">${displayDate(startDate)}</spreadsheet-cell>
         <spreadsheet-cell>${displayTime(startDate)}</spreadsheet-cell>
         <spreadsheet-cell>${displayTime(stopDate)}</spreadsheet-cell>
         <spreadsheet-cell>${displayTimeDuration(msDiff)}</spreadsheet-cell>
