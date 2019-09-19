@@ -10,6 +10,10 @@ export function UTCISOStringToDate(s) {
   return new Date(Date.UTC(b[0],b[1]-1,b[2],b[3],b[4],b[5]));
 }
 
+export function UTCStrToLocalStr(dateStr) {
+  return UTCToLocal(UTCISOStringToDate(dateStr)).toISOString()
+}
+
 export function UTCToLocal(d) {
   d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); 
   return d;
