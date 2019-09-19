@@ -10,25 +10,29 @@ const store = {
 }*/
 
 class ShiftsModel {
-  constructor() {
-    this.shifts = []
+  constructor(shifts) {
+    this.shifts = shifts || []
   }
 
-  getShiftById(startTime) {
+  getShiftById(id) {
     for (let i = 0; i < this.shifts.length; i++) {
-      if (this.shifts[i].start === startTime) {
+      if (this.shifts[i].id === id) {
         return i
       }
     }
   }
 
-  deleteRow(startTime) {
-    const index = this.getShiftById(startTime)
+  addShift(shift) {
+    this.shifts.push(shift)
+  }
+
+  deleteRow(id) {
+    const index = this.getShiftById(id)
     this.shifts.splice(index, 1)
   }
 
-  updateCell(startTime, field, value) {
-    const index = this.getShiftById(startTime)
+  updateCell(id, field, value) {
+    const index = this.getShiftById(id)
     this.shifts[index][field] = value
   }
 }

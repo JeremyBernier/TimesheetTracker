@@ -2,7 +2,7 @@
   "name": "time-tracker",
   "version": "1.0.0",
   "description": "Time Tracker for contractors and freelancers",
-  "author": "Jeremy Bernier (https://www.jbernier.com)",
+  "author": "",
   "main": "index.js",
   "dependencies": {
     "@polymer/paper-button": "^3.0.1",
@@ -22,6 +22,7 @@
     "copy-webpack-plugin": "^5.0.4",
     "eslint": "^6.3.0",
     "eslint-loader": "^3.0.0",
+    "gh-pages": "^2.1.1",
     "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.8",
@@ -31,8 +32,8 @@
   "scripts": {
     "dev": "webpack-dev-server --open --mode development",
     "build": "rm -rf dist && webpack --config webpack.config.js",
+    "deploy": "npm run build && node ./config/scripts/deploy-github.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
   "license": "ISC"
 }

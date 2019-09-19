@@ -7,6 +7,8 @@ import { ShiftsModel } from '../src/store'
 
 import { calculateTotalTime, timeToEarnings, displayTimeDuration, displayEarnings } from '../src/utils'
 
+let nextId = 0
+
 /*const store = {
   shifts: []
 }*/
@@ -21,9 +23,21 @@ class MainApp extends LitElement {
   constructor() {
     super()
 
+    this.shiftsModelObj = new ShiftsModel(this.shifts)
+
     localforage.getItem('shifts', (err, val) => {
       if (val != null && Array.isArray(val)) {
         this.shifts = val
+        this.shiftsModelObj = new ShiftsModel(this.shifts)
+        console.log('this.shifts', this.shifts)
+      }
+
+      if (this.shifts.length > 0) {
+        const maxId = Math.max(...this.shifts.map(shift => shift.id))
+
+        if (maxId != null) {
+          nextId = maxId + 1
+        }
       }
     })
 
@@ -42,23 +56,21 @@ class MainApp extends LitElement {
   }
 
   handleInput(event) {
-    console.log('input event', event.composedPath()[0])
+    const inputElem = event.composedPath()[0]
+    const id = +inputElem.id.split('-')[0]
+    this.updateCell(id, 'notes', inputElem.innerText || inputElem.value)
   }
 
-  addNote(startTime, note) {
+  updateCell(id, field, value) {
     // for now, id == startTime
-
-    // localforage.setItem('shifts', this.shifts)
+    this.shiftsModelObj.updateCell(id, field, value)
+    localforage.setItem('shifts', this.shifts)
   }
 
-  handleDeleteRow(startTime) {
+  handleDeleteRow(id) {
     // NOTE: assumes only one entry with given start time
-    for (let i = 0; i < this.shifts.length; i++) {
-      if (this.shifts[i].start === startTime) {
-        this.shifts.splice(i, 1)
-        break
-      }
-    }
+    this.shiftsModelObj.deleteRow(id)
+    this.shifts = this.shiftsModelObj.shifts
     this.requestUpdate()
     localforage.setItem('shifts', this.shifts)
   }
@@ -67,8 +79,10 @@ class MainApp extends LitElement {
     if (!this.timerRunning) {
       // start timer
       this.currentShift = {
+        id: nextId,
         start: new Date().getTime()
       }
+      nextId++;
       this.timer = setInterval(() => {
         this.curTimeElapsed = this.curTimeElapsed + 1;
       }, 1000);
@@ -80,7 +94,8 @@ class MainApp extends LitElement {
       this.curTimeElapsed = 0
 
       // save new shift
-      this.shifts.push(this.currentShift)
+      this.shiftsModelObj.addShift(this.currentShift)
+      // this.shifts.push(this.currentShift)
       this.currentShift = null
       localforage.setItem('shifts', this.shifts)
     }
@@ -106,7 +121,7 @@ class MainApp extends LitElement {
           ${this.shifts.map(shift => html`
             <timesheet-row
               .data=${shift}
-              .handleDeleteRow=${() => this.handleDeleteRow(shift.start)}
+              .handleDeleteRow=${() => this.handleDeleteRow(shift.id)}
             ></timesheet-row>
           `)}
           ${this.timerRunning ? html`
