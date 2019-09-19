@@ -1,5 +1,7 @@
 import {LitElement, html, css, customElement, property} from 'lit-element'
 
+import sharedStyles from '../src/styles/sharedStyles'
+
 import './spreadsheet-row'
 import './spreadsheet-cell'
 
@@ -13,6 +15,7 @@ class TimesheetRow extends LitElement {
 
   static get styles() {
     return css`
+      ${sharedStyles}
       :host {
       }
       .notes {
@@ -25,13 +28,6 @@ class TimesheetRow extends LitElement {
         color: rgb(170,170,170);
         border-style: groove;
         border-radius: 20%;
-      }
-      input {
-        background-color: inherit;
-        color: inherit;
-        border-style: inherit;
-        border-color: inherit;
-        border-size: inherit;
       }
     `
   }

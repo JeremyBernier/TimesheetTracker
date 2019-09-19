@@ -3,6 +3,8 @@ import localforage from "localforage"
 
 import './timesheet-row'
 
+import sharedStyles from '../src/styles/sharedStyles'
+
 import { ShiftsModel } from '../src/store'
 
 import { calculateTotalTime, timeToEarnings, displayTimeDuration, displayEarnings,
@@ -26,6 +28,7 @@ class MainApp extends LitElement {
   @property({ type: Number }) curTimeElapsed = 0
   @property({ type: Array }) shifts = []
   @property({ type: Object }) currentShift = {}
+  @property({ type: Boolean }) darkTheme = true
 
   constructor() {
     super()
@@ -72,6 +75,10 @@ class MainApp extends LitElement {
 
     this.handleDeleteRow = this.handleDeleteRow.bind(this)
     this.handleInput = this.handleInput.bind(this)
+
+    if (!document.body.classList.contains('theme-dark')) {
+      this.darkTheme = false
+    }
   }
 
   connectedCallback() {
@@ -177,6 +184,11 @@ class MainApp extends LitElement {
     this.timerRunning = !this.timerRunning
   }
 
+  toggleTheme() {
+    document.body.classList.toggle('theme-dark')
+    this.darkTheme = !this.darkTheme
+  }
+
   render() {
     const totalTimeMs = calculateTotalTime(this.shifts)
     const curTime = new Date().toISOString()
@@ -188,8 +200,15 @@ class MainApp extends LitElement {
     return html`
       <main class="main-wrapper">
         <section class="section-top">
-          <div><span class="label-heading">Total Time:</span> ${displayTimeDuration(totalTimeMs + this.curTimeElapsed * 1000)}</div>
-          <div><span class="label-heading">Total Earnings:</span> ${displayEarnings(timeToEarnings(totalTimeMs + this.curTimeElapsed * 1000))}</div>
+          <div class="flex">
+            <div>
+              <div><span class="label-heading">Total Time:</span> ${displayTimeDuration(totalTimeMs + this.curTimeElapsed * 1000)}</div>
+              <div><span class="label-heading">Total Earnings:</span> ${displayEarnings(timeToEarnings(totalTimeMs + this.curTimeElapsed * 1000))}</div>
+            </div>
+            <div>
+              <button @click=${this.toggleTheme}>${this.darkTheme ? '🌛' : '🌞'}</button>
+            </div>
+          </div>
         </section>
         <section class="section-middle">
           ${this.shifts.map(shift => html`
@@ -211,6 +230,7 @@ class MainApp extends LitElement {
 
   static get styles() {
     return css`
+      ${sharedStyles}
       :host {
       }
       .main-wrapper {
@@ -248,6 +268,11 @@ class MainApp extends LitElement {
       .btn-clock-in:hover {
         border-color: cyan;
         color: cyan;
+      }
+
+      .flex {
+        display: flex;
+        justify-content: space-between;
       }
     `
   }
