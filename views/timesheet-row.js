@@ -3,7 +3,8 @@ import {LitElement, html, css, customElement, property} from 'lit-element'
 import './spreadsheet-row'
 import './spreadsheet-cell'
 
-import { timeToEarnings, displayTimeDuration, displayEarnings, displayDate, displayTime } from '../src/utils'
+import { timeToEarnings, displayTimeDuration, displayEarnings,
+  displayDate, displayTime, getTimeDiff } from '../src/utils'
 
 @customElement('timesheet-row')
 class TimesheetRow extends LitElement {
@@ -37,16 +38,14 @@ class TimesheetRow extends LitElement {
 
   render() {
     const { start, stop, notes, id } = this.data
-    const startDate = new Date(start)
-    const stopDate = new Date(stop)
-    const msDiff = stop - start
+    const msDiff = getTimeDiff(start, stop)
 
     if (this.stillRunning) {
       return html`
       <spreadsheet-row highlight="true">
-        <spreadsheet-cell>${displayDate(startDate)}</spreadsheet-cell>
-        <spreadsheet-cell>${displayTime(startDate)}</spreadsheet-cell>
-        <spreadsheet-cell>${displayTime(stopDate)}</spreadsheet-cell>
+        <spreadsheet-cell>${displayDate(start)}</spreadsheet-cell>
+        <spreadsheet-cell>${displayTime(start)}</spreadsheet-cell>
+        <spreadsheet-cell>${displayTime(stop)}</spreadsheet-cell>
         <spreadsheet-cell>${displayTimeDuration(msDiff)}</spreadsheet-cell>
         <spreadsheet-cell>${displayEarnings(timeToEarnings(msDiff))}</spreadsheet-cell>
       </spreadsheet-row>
@@ -64,9 +63,9 @@ class TimesheetRow extends LitElement {
 
     return html`
       <spreadsheet-row>
-        <spreadsheet-cell id="${id}-start" contenteditable="true">${displayDate(startDate)}</spreadsheet-cell>
-        <spreadsheet-cell>${displayTime(startDate)}</spreadsheet-cell>
-        <spreadsheet-cell>${displayTime(stopDate)}</spreadsheet-cell>
+        <spreadsheet-cell id="${id}-0" contenteditable="true">${displayDate(start)}</spreadsheet-cell>
+        <spreadsheet-cell>${displayTime(start)}</spreadsheet-cell>
+        <spreadsheet-cell>${displayTime(stop)}</spreadsheet-cell>
         <spreadsheet-cell>${displayTimeDuration(msDiff)}</spreadsheet-cell>
         <spreadsheet-cell>${displayEarnings(timeToEarnings(msDiff))}</spreadsheet-cell>
         <spreadsheet-cell>${notesElem}</spreadsheet-cell>

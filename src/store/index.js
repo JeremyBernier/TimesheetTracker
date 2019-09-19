@@ -23,6 +23,7 @@ class ShiftsModel {
   }
 
   addShift(shift) {
+    console.log('addShift', shift)
     this.shifts.push(shift)
   }
 

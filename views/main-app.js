@@ -5,9 +5,16 @@ import './timesheet-row'
 
 import { ShiftsModel } from '../src/store'
 
-import { calculateTotalTime, timeToEarnings, displayTimeDuration, displayEarnings } from '../src/utils'
+import { calculateTotalTime, timeToEarnings, displayTimeDuration, displayEarnings,
+  UTCISOStringToTime } from '../src/utils'
 
 let nextId = 0
+
+const colToField = {
+  0: 'START_DATE',
+}
+
+// const msPerDay = 1000*60*60*24
 
 /*const store = {
   shifts: []
@@ -45,8 +52,21 @@ class MainApp extends LitElement {
               nextId++
             }
           }
-          localforage.setItem('shifts', this.shifts)
         }
+      }
+
+
+      // if date is number, convert to UTC string
+      for (let i = 0; i < this.shifts.length; i++) {
+        const { start, stop } = this.shifts[i]
+        if (typeof this.shifts[i]['start'] !== 'string') {
+          this.shifts[i]['start'] = new Date(start).toISOString()
+          this.shifts[i]['stop'] = new Date(stop).toISOString()
+        }
+      }
+
+      if (val != this.shifts) {
+          localforage.setItem('shifts', this.shifts)
       }
     })
 
@@ -74,10 +94,32 @@ class MainApp extends LitElement {
 
       this.updateCell(id, field, value)
 
-    } else if (field === 'start') {
-      const date = new Date(value)
-      if (!isNaN(date)) {
-        this.updateCell(id, field, date)
+    } else if (colToField[field] === 'START_DATE') {
+
+      const splitArr = value.split('-')
+
+      let paddedMonths = splitArr[1]
+      if (splitArr[1].length < 2) {
+        paddedMonths = '0' + paddedMonths
+      }
+
+      let paddedDays = splitArr[2]
+      if (splitArr[2].length < 2) {
+        paddedDays = '0' + paddedDays
+      }
+
+      const formattedValue = `${splitArr[0]}-${paddedMonths}-${paddedDays}`
+
+      const oldDate = this.shiftsModelObj.shifts[this.shiftsModelObj.getShiftById(id)]['start']
+      const newISOStr = formattedValue + oldDate.substring(10)
+      const newDateMs = UTCISOStringToTime(newISOStr)
+
+      if (!isNaN(newDateMs)) {
+/*        const hours = oldDate.getUTCHours()
+        const minutes = oldDate.getUTCMinutes()
+        const seconds = oldDate.getUTCSeconds()
+        const newDate = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), hours, minutes, seconds))*/
+        this.updateCell(id, 'start', newISOStr)
       } else {
         // don't change
       }
@@ -86,6 +128,7 @@ class MainApp extends LitElement {
 
   updateCell(id, field, value) {
     // for now, id == startTime
+    console.log('updateCell', id, field, value)
     this.shiftsModelObj.updateCell(id, field, value)
     localforage.setItem('shifts', this.shifts)
   }
@@ -103,7 +146,7 @@ class MainApp extends LitElement {
       // start timer
       this.currentShift = {
         id: nextId,
-        start: new Date().getTime()
+        start: new Date().toISOString()
       }
       nextId++;
       this.timer = setInterval(() => {
@@ -111,7 +154,7 @@ class MainApp extends LitElement {
       }, 1000);
     } else {
       // stop timer
-      this.currentShift.stop = new Date().getTime()
+      this.currentShift.stop = new Date().toISOString()
 
       clearInterval(this.timer)
       this.curTimeElapsed = 0
@@ -128,7 +171,7 @@ class MainApp extends LitElement {
 
   render() {
     const totalTimeMs = calculateTotalTime(this.shifts)
-    const curTime = new Date().getTime()
+    const curTime = new Date().toISOString()
     let currentShiftSoFar
     if (this.timerRunning) {
       currentShiftSoFar = {...this.currentShift, stop: curTime}

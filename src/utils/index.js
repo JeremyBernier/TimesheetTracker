@@ -1,11 +1,27 @@
 const HOURLY_RATE = 50
 
+export function UTCISOStringToTime(s) {
+  return UTCISOStringToDate(s).getTime()
+}
+
+// https://stackoverflow.com/questions/10678610/utc-times-in-javascript
+export function UTCISOStringToDate(s) {
+  var b = s.split(/[-T:\.Z]/i);
+  return new Date(Date.UTC(b[0],b[1]-1,b[2],b[3],b[4],b[5]));
+}
+
 export function calculateTotalTime(shifts) {
   const sum = shifts.map((shift) => {
-    return (shift.stop - shift.start)
+    return getTimeDiff(shift.start, shift.stop)
   }).reduce((a, b) => a + b, 0)
 
   return sum
+}
+
+export function getTimeDiff(start, stop) {
+  const stopMs = UTCISOStringToTime(stop)
+  const startMs = UTCISOStringToTime(start)
+  return stopMs - startMs
 }
 
 export function timeToEarnings(time) {
@@ -27,11 +43,20 @@ export function displayEarnings(earnings) {
   return `$${earnings}`
 }
 
+// @param {String} date  UTCISO string
 export function displayDate(date) {
-  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+  return date.substring(0,10)
 }
 
-export function displayTime(date) {
+function getHours(dateStr) {
+  return dateStr.substring(11,13)
+}
+
+export function displayTime(dateStr) {
+  return dateStr.substring(11,16)
+}
+
+/*export function displayTime(date) {
   var hours = date.getHours();
   var minutes = date.getMinutes();
   var ampm = hours >= 12 ? 'pm' : 'am';
@@ -40,4 +65,4 @@ export function displayTime(date) {
   minutes = minutes < 10 ? '0'+minutes : minutes;
   var strTime = hours + ':' + minutes + ' ' + ampm;
   return hours + ':' + minutes + ' ' + ampm;
-}
+}*/
