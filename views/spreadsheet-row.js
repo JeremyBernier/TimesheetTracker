@@ -11,7 +11,7 @@ class SpreadsheetRow extends LitElement {
       }
 
       .highlight {
-        background-color: palegreen;
+        background-color: var(--timesheet-running-bgcolor)
       }
     `
   }

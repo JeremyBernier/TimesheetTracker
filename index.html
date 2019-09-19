@@ -18,6 +18,34 @@
       margin: 0;
       padding: 0;
     }
+
+    body {
+      --section-top-bg-color: #e6ecff;
+      --foter-bg-color: rgb(240,240,240);
+      --footer-a-color: navy;
+      --footer-a-color2: teal;
+      --timesheet-running-bgcolor: palegreen;
+
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: hsl(0, 0%, 15%);
+        color: white;
+        --section-top-bg-color: hsl(235, 19%, 18%);
+        --timesheet-running-bgcolor: #009d9d;
+        --footer-bg-color: hsl(235, 5%, 12%);
+        --footer-a-color: #558ad6;
+        --footer-a-color2: #4e9ec2;
+      }
+
+      input {
+        background: transparent;
+        color: white;
+        border-style: solid;
+        border-color: white;
+      }
+    }
   </style>
 </head>
 <body>

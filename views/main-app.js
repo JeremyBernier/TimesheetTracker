@@ -138,7 +138,7 @@ class MainApp extends LitElement {
             <timesheet-row stillRunning="true" .data=${currentShiftSoFar}></timesheet-row>
           ` : ''}
 
-          <button style="margin-top:1rem;" @click="${this.handleTimerBtn}">${this.timerRunning ? 'Clock Out' : 'Clock In'}</button>
+          <button class="btn-clock-in mt-1" @click="${this.handleTimerBtn}">${this.timerRunning ? 'Clock Out' : 'Clock In'}</button>
         </section>
       </main>
       <footer-view></footer-view>
@@ -157,7 +157,7 @@ class MainApp extends LitElement {
       .section-top {
         border-bottom: 1px solid gray;
         margin-bottom:.5rem;
-        background-color: #e6ecff;
+        background-color: var(--section-top-bg-color);
       }
 
       .section-top, .section-middle {
@@ -166,6 +166,24 @@ class MainApp extends LitElement {
 
       .label-heading {
         font-weight: bold;
+      }
+
+      .mt-1 {
+        margin-top: 1rem;
+      }
+
+      .btn-clock-in {
+        background: transparent;
+        border-style: solid;
+        color: white;
+        padding: .3rem 1rem;
+        cursor: pointer;
+        transition: .15s all;
+      }
+
+      .btn-clock-in:hover {
+        border-color: cyan;
+        color: cyan;
       }
     `
   }
@@ -181,22 +199,27 @@ class FooterView extends LitElement {
         margin-top: 2rem;
         padding: 2rem 2rem;
         border-top: 1px solid rgb(230,230,230);
-        background-color: rgb(240,240,240);
+        background-color: var(--footer-bg-color);
       }
 
       a {
-        color: navy;
+        color: var(--footer-a-color);
         text-decoration: none;
       }
       a:hover {
         text-decoration: underline;
+      }
+
+      a.style-2 {
+        color: var(--footer-a-color2);
       }
     `
   }
   render() {
     return html`
       <footer>
-        <div>Made by <a href="https://www.jbernier.com">Jeremy Bernier</a>. The code is <a href="https://github.com/jeremybernier">open source.</a></div>
+        <div>Made by <a href="https://www.jbernier.com">Jeremy Bernier</a>.
+        The code is <a class="style-2" href="https://github.com/jeremybernier">open source.</a></div>
       </footer>
     `
   }

@@ -10,6 +10,31 @@ class TimesheetRow extends LitElement {
   @property({type: Object}) data = {}
   @property({type: Boolean}) stillRunning = false
 
+  static get styles() {
+    return css`
+      :host {
+      }
+      .notes {
+        color: rgb(230,230,230);
+      }
+
+      .btn-delete-row {
+        user-select:none;
+        background: transparent;
+        color: rgb(170,170,170);
+        border-style: groove;
+        border-radius: 20%;
+      }
+      input {
+        background-color: inherit;
+        color: inherit;
+        border-style: inherit;
+        border-color: inherit;
+        border-size: inherit;
+      }
+    `
+  }
+
   render() {
     const { start, stop, notes, id } = this.data
     const startDate = new Date(start)
@@ -32,7 +57,7 @@ class TimesheetRow extends LitElement {
 
     let notesElem
     if (notes != null && notes !== '') {
-      notesElem = html`<span style="color:rgb(115,115,115);" id="${id}-notes" contenteditable="true">${notes}</span>`
+      notesElem = html`<span class="notes" id="${id}-notes" contenteditable="true">${notes}</span>`
     } else {
       notesElem = html`<input id="${id}-notes" type="text" />`
     }
@@ -45,7 +70,7 @@ class TimesheetRow extends LitElement {
         <spreadsheet-cell>${displayTimeDuration(msDiff)}</spreadsheet-cell>
         <spreadsheet-cell>${displayEarnings(timeToEarnings(msDiff))}</spreadsheet-cell>
         <spreadsheet-cell>${notesElem}</spreadsheet-cell>
-        <button style="user-select:none;" @click=${this.handleDeleteRow}>x</button>
+        <button class="btn-delete-row" @click=${this.handleDeleteRow}>x</button>
       </spreadsheet-row>
     `
   }
