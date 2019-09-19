@@ -6,7 +6,7 @@ import './timesheet-row'
 import { ShiftsModel } from '../src/store'
 
 import { calculateTotalTime, timeToEarnings, displayTimeDuration, displayEarnings,
-  UTCISOStringToTime } from '../src/utils'
+  UTCISOStringToTime, UTCISOStringToDate, LocalToUTCStr } from '../src/utils'
 
 let nextId = 0
 
@@ -109,17 +109,34 @@ class MainApp extends LitElement {
       }
 
       const formattedValue = `${splitArr[0]}-${paddedMonths}-${paddedDays}`
+      const arrIndex = this.shiftsModelObj.getShiftById(id)
+      // Note: This is UTC, while value is local
+      const oldStartDate = this.shiftsModelObj.shifts[arrIndex]['start']
+      const newISOStrLocal = formattedValue + oldStartDate.substring(10)
+      const newISOStrUTC = LocalToUTCStr(newISOStrLocal)
 
-      const oldDate = this.shiftsModelObj.shifts[this.shiftsModelObj.getShiftById(id)]['start']
-      const newISOStr = formattedValue + oldDate.substring(10)
-      const newDateMs = UTCISOStringToTime(newISOStr)
+      if (!isNaN(UTCISOStringToTime(newISOStrUTC))) {
 
-      if (!isNaN(newDateMs)) {
-/*        const hours = oldDate.getUTCHours()
-        const minutes = oldDate.getUTCMinutes()
-        const seconds = oldDate.getUTCSeconds()
-        const newDate = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), hours, minutes, seconds))*/
-        this.updateCell(id, 'start', newISOStr)
+        // legit date so let's do this
+        const oldStopDate = this.shiftsModelObj.shifts[arrIndex]['stop']
+        let newStopISOStr = newISOStrUTC.substring(0, 10) + oldStopDate.substring(10)
+
+        let isStopDateAhead = UTCISOStringToDate(oldStartDate).getDate() !== UTCISOStringToDate(oldStopDate).getDate()
+        console.log('isStopDateAhead', isStopDateAhead)
+        if (!isStopDateAhead) {
+          // some dumbass UTC shenanigans going on here
+          let newStopDateObj = UTCISOStringToDate(newStopISOStr)
+          newStopDateObj.setDate(newStopDateObj.getDate() + 1)
+          newStopISOStr = newStopDateObj.toISOString().substring(0,10) + newStopISOStr.substring(10)
+        }
+        console.log('old start', oldStartDate)
+        console.log('new start', newISOStrUTC)
+        console.log('old start', oldStopDate)
+        console.log('new start', newStopISOStr)
+        this.updateCell(id, 'start', newISOStrUTC)
+        this.updateCell(id, 'stop', newStopISOStr)
+
+        if (!isStopDateAhead) {}
       } else {
         // don't change
       }

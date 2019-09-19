@@ -10,6 +10,20 @@ export function UTCISOStringToDate(s) {
   return new Date(Date.UTC(b[0],b[1]-1,b[2],b[3],b[4],b[5]));
 }
 
+export function UTCToLocal(d) {
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); 
+  return d;
+}
+
+export function LocalToUTC(d) {
+  d.setMinutes(d.getMinutes() + d.getTimezoneOffset()); 
+  return d;
+}
+
+export function LocalToUTCStr(dateStr) {
+  return LocalToUTC(UTCISOStringToDate(dateStr)).toISOString()
+}
+
 export function calculateTotalTime(shifts) {
   const sum = shifts.map((shift) => {
     return getTimeDiff(shift.start, shift.stop)
@@ -43,17 +57,21 @@ export function displayEarnings(earnings) {
   return `$${earnings}`
 }
 
-// @param {String} date  UTCISO string
-export function displayDate(date) {
-  return date.substring(0,10)
-}
-
 function getHours(dateStr) {
   return dateStr.substring(11,13)
 }
 
+// @param {String} date  UTCISO string
+export function displayDate(dateStr) {
+  const dateObj = UTCISOStringToDate(dateStr)
+  const localDateObj = UTCToLocal(dateObj)
+  return localDateObj.toISOString().substring(0,10)
+}
+
 export function displayTime(dateStr) {
-  return dateStr.substring(11,16)
+  const dateObj = UTCISOStringToDate(dateStr)
+  const localDateObj = UTCToLocal(dateObj)
+  return localDateObj.toISOString().substring(11,16)
 }
 
 /*export function displayTime(date) {
