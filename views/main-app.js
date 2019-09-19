@@ -35,8 +35,18 @@ class MainApp extends LitElement {
       if (this.shifts.length > 0) {
         const maxId = Math.max(...this.shifts.map(shift => shift.id))
 
-        if (maxId != null) {
+        if (maxId != null && !isNaN(maxId)) {
           nextId = maxId + 1
+        } else {
+          // make sure all have ids. if not, add them and save
+          for (let i = 0; i < this.shifts.length; i++) {
+            const shiftId = this.shifts[i].id
+            if (shiftId == null || isNaN(shiftId)) {
+              this.shifts[i].id = nextId
+              nextId++
+            }
+          }
+          localforage.setItem('shifts', this.shifts)
         }
       }
     })
