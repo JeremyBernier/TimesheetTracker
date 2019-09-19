@@ -18,9 +18,6 @@ class TimesheetRow extends LitElement {
       ${sharedStyles}
       :host {
       }
-      .notes {
-        color: rgb(230,230,230);
-      }
 
       .btn-delete-row {
         user-select:none;
@@ -64,7 +61,7 @@ class TimesheetRow extends LitElement {
         <spreadsheet-cell>${displayTime(stop)}</spreadsheet-cell>
         <spreadsheet-cell>${displayTimeDuration(msDiff)}</spreadsheet-cell>
         <spreadsheet-cell>${displayEarnings(timeToEarnings(msDiff))}</spreadsheet-cell>
-        <spreadsheet-cell>${notesElem}</spreadsheet-cell>
+        <spreadsheet-cell class="flex-grow">${notesElem}</spreadsheet-cell>
         <button class="btn-delete-row" @click=${this.handleDeleteRow}>x</button>
       </spreadsheet-row>
     `

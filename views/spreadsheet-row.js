@@ -13,16 +13,17 @@ class SpreadsheetRow extends LitElement {
       .highlight {
         background-color: var(--timesheet-running-bgcolor)
       }
+
+      .spreadsheet-row {
+        max-width: 600px;
+      }
     `
   }
 
   render() {
-    let spreadsheetClass = 'spreadsheet-row'
-    if (this.highlight) {
-      spreadsheetClass += ' highlight'
-    }
+    const highlightClass = this.highlight ? ' highlight' : ''
     return html`
-      <div class=${spreadsheetClass}>
+      <div class="spreadsheet-row${highlightClass}">
         <slot></slot>
       </div>
     `

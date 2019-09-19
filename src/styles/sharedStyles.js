@@ -8,6 +8,9 @@ export default css`
     border-color: inherit;
     border-size: inherit;
     outline: none;
+  }
+
+  input[type="button"], button {
     cursor: pointer;
   }
 
