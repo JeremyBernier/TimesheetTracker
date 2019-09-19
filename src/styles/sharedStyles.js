@@ -10,4 +10,8 @@ export default css`
     outline: none;
     cursor: pointer;
   }
+
+  button:hover {
+    border-color: #7ccaca;
+  }
 `
