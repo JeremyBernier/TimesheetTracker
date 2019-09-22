@@ -221,8 +221,9 @@ class MainApp extends LitElement {
           ${this.timerRunning ? html`
             <timesheet-row stillRunning="true" .data=${currentShiftSoFar}></timesheet-row>
           ` : ''}
-
-          <button class="btn-clock-in mt-1" @click="${this.handleTimerBtn}">${this.timerRunning ? 'Clock Out' : 'Clock In'}</button>
+          ${this.timerRunning ? 
+            html`<button class="btn-clock mt-1" @click="${this.handleTimerBtn}">Clock In</button>` :
+            html`<button class="btn-clock out mt-1" @click="${this.handleTimerBtn}">Clock Out</button>`}
         </section>
       </main>
       <footer-view></footer-view>
@@ -257,7 +258,7 @@ class MainApp extends LitElement {
         margin-top: 1rem;
       }
 
-      .btn-clock-in {
+      .btn-clock {
         background: transparent;
         border-style: solid;
         color: white;
@@ -266,9 +267,14 @@ class MainApp extends LitElement {
         transition: .15s all;
       }
 
-      .btn-clock-in:hover {
+      .btn-clock:hover {
         border-color: cyan;
         color: cyan;
+      }
+
+      .btn-clock.out:hover {
+        border-color: red;
+        color: red;
       }
 
       .flex {
