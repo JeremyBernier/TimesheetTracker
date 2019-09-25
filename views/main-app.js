@@ -194,6 +194,7 @@ class MainApp extends LitElement {
     const totalTimeMs = calculateTotalTime(this.shifts)
     const curTime = new Date().toISOString()
     let currentShiftSoFar
+    
     if (this.timerRunning) {
       currentShiftSoFar = {...this.currentShift, stop: curTime}
     }
@@ -222,8 +223,8 @@ class MainApp extends LitElement {
             <timesheet-row stillRunning="true" .data=${currentShiftSoFar}></timesheet-row>
           ` : ''}
           ${this.timerRunning ? 
-            html`<button class="btn-clock mt-1" @click="${this.handleTimerBtn}">Clock In</button>` :
-            html`<button class="btn-clock out mt-1" @click="${this.handleTimerBtn}">Clock Out</button>`}
+            html`<button class="btn-clock out mt-1" @click="${this.handleTimerBtn}">Clock Out</button>` :
+            html`<button class="btn-clock mt-1" @click="${this.handleTimerBtn}">Clock In</button>`}
         </section>
       </main>
       <footer-view></footer-view>
